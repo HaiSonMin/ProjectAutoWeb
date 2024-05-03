@@ -4,10 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './features/auth/auth.module';
-import { UserModule } from './features/user/user.module';
+import { AuthModule } from '@/features/auth/auth.module';
+import { UserModule } from '@/features/user/user.module';
 import { MailModule } from '@/features/scripts/mail/mail.module';
-import { CloneFBModule } from '@/features/clone-face/clonefb.module';
+import { FacebookModule } from './features/phone/facebook/facebook.module';
 
 @Module({
   imports: [
@@ -25,9 +25,9 @@ import { CloneFBModule } from '@/features/clone-face/clonefb.module';
       // },
     }),
     MailModule,
-    CloneFBModule,
     AuthModule,
     UserModule,
+    FacebookModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

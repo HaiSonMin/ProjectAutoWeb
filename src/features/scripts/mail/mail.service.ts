@@ -1,8 +1,15 @@
 import {
-  loginMail,
-  createAccountScript,
-  scratchMailAccountScript,
-} from '@/hooks/puppeteer/mail';
+  delay,
+  skipPage,
+  latinizeStr,
+  randomName,
+  selectFields,
+} from '@/utils';
+import {
+  loginMailSelenium,
+  createAccountEmailSelenium,
+  scratchMailAccountSelenium,
+} from '@/hooks/selenium/mail';
 import { Mail } from './model';
 import { Model } from 'mongoose';
 import { EStatus } from '@/enums';
@@ -11,15 +18,10 @@ import { IMail } from '@/interfaces/models';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MailDtoCreate, MailDtoCreateRandom, MailDtoUpdate } from './dto';
-import {
-  delay,
-  latinizeStr,
-  randomName,
-  skipPage,
-  selectFields,
-} from '@/utils';
 import { IGetManyItem, IQuery, ITokenVerify } from '@/interfaces/common';
 import { LIST_OF_FIRST_NAME, LIST_OF_LAST_NAME } from '@/constants';
+import { DriverSelenium } from '@/core';
+import { PROXY_IPS } from '@/hooks/proxy-ips';
 
 @Injectable()
 export class MailService {
@@ -64,6 +66,7 @@ export class MailService {
   }: Pick<MailDtoCreateRandom, 'number_account'>): Promise<
     IGetManyItem<IMail>
   > {
+    const driver = await DriverSelenium(PROXY_IPS[0]);
     const mailsSpending = await this.mailModel
       .find({
         mail_status: EStatus.SPENDING,
@@ -72,11 +75,14 @@ export class MailService {
       .lean()
       .exec();
 
-    const page = await loginMail();
+    await loginMailSelenium(driver);
+
+    await delay(1000);
 
     const listMailUpdated = [];
     for (const mail of mailsSpending) {
-      await createAccountScript(page, mail);
+      // await createAccountScript(page, mail);
+      await createAccountEmailSelenium(driver, mail);
 
       const mailUpdated = await this.mailModel
         .findByIdAndUpdate(
@@ -91,10 +97,10 @@ export class MailService {
 
       listMailUpdated.push(mailUpdated);
 
-      await delay(500);
+      await delay(100);
     }
-
-    await page.close();
+    await delay(1000);
+    // await driver.quit();
 
     return {
       totalItems: listMailUpdated.length,
@@ -103,8 +109,11 @@ export class MailService {
   }
 
   async scratchAccounts(): Promise<IGetManyItem<IMail>> {
+    // const itemsAccountsScratched =
+    //   (await scratchMailAccountScript()) as IMail[];
+
     const itemsAccountsScratched =
-      (await scratchMailAccountScript()) as IMail[];
+      (await scratchMailAccountSelenium()) as IMail[];
 
     const listNewEmails = await Promise.all(
       itemsAccountsScratched.map(async (item) => {
@@ -178,5 +187,13 @@ export class MailService {
       .exec();
     if (!mailDeleted) throw new BadRequestException('Email không tồn tại');
     return mailDeleted;
+  }
+
+  async deleteAllMailSpending(): Promise<any> {
+    await this.mailModel
+      .deleteMany({ mail_status: EStatus.SPENDING })
+      .lean()
+      .exec();
+    return;
   }
 }

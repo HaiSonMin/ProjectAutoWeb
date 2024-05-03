@@ -9,7 +9,7 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('automation-api');
+  app.setGlobalPrefix('api/v1');
 
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({ origin: '*' });
@@ -22,7 +22,6 @@ async function bootstrap() {
     .setTitle('Application Automation Scripts')
     .setDescription('API application automation')
     .setVersion('1.0')
-    .addTag('App')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

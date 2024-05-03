@@ -18,18 +18,27 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ResponseCreate } from '@/core';
+import { DriverSelenium, ResponseCreate } from '@/core';
 import { AuthGuard } from '../../auth/guards';
 import { VALUES_CONST } from '@/constants';
 import { IMail } from '@/interfaces/models';
 import { MailService } from './mail.service';
 import { MailDtoCreate, MailDtoCreateRandom, MailDtoUpdate } from './dto';
 import { IBaseResponse, IGetManyItem, IQuery } from '@/interfaces/common';
+import { PROXY_IPS } from '@/hooks/proxy-ips';
+import { delay } from '@/utils';
 
 @ApiTags('Mail Apis')
 @Controller('mails')
 export class MailController {
   constructor(private mailService: MailService) {}
+  @Post('/test-proxy')
+  async testProxy(): Promise<any> {
+    const driver = await DriverSelenium(PROXY_IPS[80]);
+    await driver.get('https://checkip.com.vn/');
+    await delay(1000);
+    await driver.quit();
+  }
 
   @Post('/create-random-accounts')
   @ApiOperation({
@@ -139,6 +148,18 @@ export class MailController {
     return new ResponseCreate({
       message: 'Xóa mail thành công',
       metadata: await this.mailService.deleteByMail(mail_address),
+    });
+  }
+
+  @Delete('/spending')
+  @ApiOperation({
+    summary: 'Xóa tất cả mail đang chờ',
+    description: 'Xóa tất cả các mail đang có trạng thái spending',
+  })
+  async deleteAllSpending(): Promise<IBaseResponse<IMail>> {
+    return new ResponseCreate({
+      message: 'Xóa tất cả mails spending thành công',
+      metadata: await this.mailService.deleteAllMailSpending(),
     });
   }
 }

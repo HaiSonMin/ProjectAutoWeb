@@ -1,14 +1,16 @@
 import { IBaseModel } from '../common';
 
 export abstract class ICloneFB extends IBaseModel {
+  clonefb_proxy: string;
   clonefb_firstName: string;
   clonefb_lastName: string;
   clonefb_nickname: string;
+  clonefb_imageAuth: string;
+  clonefb_phone: string;
   clonefb_avatar: string;
   clonefb_pass: string;
   clonefb_2fa: string;
   clonefb_uid: string;
-  clonefb_phone: string;
   clonefb_token: string;
   clonefb_cookie: string;
   clonefb_gender: string;
