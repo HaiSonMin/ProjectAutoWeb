@@ -5,13 +5,25 @@ import { IMail, IMailRandom } from '@/interfaces/models';
 import { IsEmail, IsEnum, IsNotEmpty, Max, Min } from 'class-validator';
 
 export class MailDtoCreateRandom extends IMailRandom {
-  @Expose()
   @Min(1, { message: 'Số lượng lớn hơn hoặc bằng 1' })
   @Max(10000, { message: 'Số lượng nhỏ hơn hoặc bằng 10000' })
   @ApiProperty({ type: Number, required: true, default: 1 })
   number_account: number;
 
-  @Expose()
+  @ApiProperty({
+    type: String,
+    required: true,
+    description: 'Địa chỉ email',
+  })
+  mail_address: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+    description: 'Mật khẩu tài khoảng mail của bạn',
+  })
+  mail_password: string;
+
   @ApiProperty({
     type: String,
     required: true,
@@ -19,6 +31,13 @@ export class MailDtoCreateRandom extends IMailRandom {
       'Mật khẩu được sử dụng chung cho tất cả account được tạo chung trong 1 phiên',
   })
   password_account: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
+    description: 'Tên người tạo',
+  })
+  creator: string;
 }
 
 export interface MailDtoScratch
@@ -68,6 +87,9 @@ export abstract class MailDtoCreate
   @IsNotEmpty({ message: 'Không được để trống trường mật khẩu' })
   @ApiProperty({ type: String, required: true })
   mail_password: string;
+
+  @ApiProperty({ type: String, required: true })
+  mail_creator: string;
 }
 
 export abstract class MailDtoUpdate implements Partial<IMail> {

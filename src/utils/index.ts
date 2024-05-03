@@ -91,3 +91,16 @@ export const getMiliSecondFormSecond = (second: number) => second * 1000;
 
 export const verifyToken = (token: string, key: string): ITokenVerify | null =>
   JWT.verify(token, key) as ITokenVerify;
+
+export function getCurrentDateFull(): string {
+  const today: Date = new Date();
+  const dd: string = String(today.getDate()).padStart(2, '0');
+  const mm: string = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+  const yyyy: number = today.getFullYear();
+
+  const hours: string = String(today.getHours()).padStart(2, '0');
+  const minutes: string = String(today.getMinutes()).padStart(2, '0');
+  const seconds: string = String(today.getSeconds()).padStart(2, '0');
+
+  return `${dd}/${mm}/${yyyy} ${hours}:${minutes}:${seconds}`;
+}

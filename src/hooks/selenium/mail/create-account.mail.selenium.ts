@@ -1,10 +1,11 @@
-import { IMail } from '@/interfaces/models';
-import { delay } from '@/utils';
+import { MailDtoCreate } from '@/features/scripts/mail/dto';
+import { logger } from '@/helpers/logger.helper';
+import { delay, getCurrentDateFull } from '@/utils';
 import { By, WebDriver, until } from 'selenium-webdriver';
 
 export async function createAccountEmailSelenium(
   driver: WebDriver,
-  mail: IMail,
+  mail: MailDtoCreate,
 ) {
   //  Wait for the button to be visible then click
   await delay(1000);
@@ -45,6 +46,14 @@ export async function createAccountEmailSelenium(
     .sendKeys(mail.mail_password);
   await delay(500);
 
+  // Fill the description
+  await driver
+    .findElement(By.id('zdlgv__NEW_ACCT_description'))
+    .sendKeys(
+      `Mail được tạo bởi ${mail.mail_creator}. vào ngày: ${getCurrentDateFull()}`,
+    );
+  await delay(500);
+
   await driver.findElement(By.id('zdlg__NEW_ACCT_button13_title')).click();
   await delay(1000);
 
@@ -60,5 +69,8 @@ export async function createAccountEmailSelenium(
   } else {
     console.log('Account created success');
   }
-  await delay(500);
+
+  logger.info(
+    `${mail.mail_address} ---- ${mail.mail_password} ---- ${getCurrentDateFull()}`,
+  );
 }

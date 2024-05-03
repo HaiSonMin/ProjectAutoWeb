@@ -1,11 +1,5 @@
 import * as chrome from 'selenium-webdriver/chrome';
-import {
-  Browser,
-  Builder,
-  Capabilities,
-  ProxyConfig,
-  WebDriver,
-} from 'selenium-webdriver';
+import { Browser, Builder } from 'selenium-webdriver';
 
 // export class DriverSelenium {
 //   private static instance: WebDriver;
@@ -50,8 +44,8 @@ import {
 export const DriverSelenium = async (proxyIp: string) => {
   const chromeOptions = new chrome.Options()
     .addArguments('--no-sandbox')
-    .addArguments('--disable-gpu')
-    .addArguments(`--proxy-server=http://${proxyIp}`);
+    .addArguments('--disable-gpu');
+  // .addArguments(`--proxy-server=http://${proxyIp}`);
 
   return await new Builder()
     .forBrowser(Browser.CHROME)
