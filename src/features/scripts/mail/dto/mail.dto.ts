@@ -41,7 +41,6 @@ export abstract class MailDtoCreate
       | 'mail_firstName'
       | 'mail_lastName'
       | 'mail_password'
-      | 'mail_user'
     >
 {
   @Expose()
@@ -69,11 +68,6 @@ export abstract class MailDtoCreate
   @IsNotEmpty({ message: 'Không được để trống trường mật khẩu' })
   @ApiProperty({ type: String, required: true })
   mail_password: string;
-
-  @Expose()
-  @IsNotEmpty({ message: 'Không được để trống mã người dùng' })
-  @ApiProperty({ type: String, required: true })
-  mail_user: string;
 }
 
 export abstract class MailDtoUpdate implements Partial<IMail> {

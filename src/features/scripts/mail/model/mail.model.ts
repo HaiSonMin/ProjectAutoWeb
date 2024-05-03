@@ -1,8 +1,6 @@
 import { ESocial } from '@/enums';
-import { User } from '@/features/user/model';
 import { IMail } from '@/interfaces/models';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Mail extends IMail {
@@ -38,9 +36,6 @@ export class Mail extends IMail {
 
   @Prop({ type: String })
   mail_description: string;
-
-  @Prop({ type: mongoose.Schema.ObjectId, ref: User.name, required: true })
-  mail_user: string;
 }
 
 export const MailModel = SchemaFactory.createForClass(Mail).index({

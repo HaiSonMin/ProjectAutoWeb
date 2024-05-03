@@ -7,20 +7,9 @@ import {
   Patch,
   Post,
   Query,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiTags,
-  PickType,
-  ApiOperation,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
-import { Request } from 'express';
+import { ApiBody, ApiTags, PickType, ApiOperation } from '@nestjs/swagger';
 import { DriverSelenium, ResponseCreate } from '@/core';
-import { AuthGuard } from '../../auth/guards';
-import { VALUES_CONST } from '@/constants';
 import { IMail } from '@/interfaces/models';
 import { MailService } from './mail.service';
 import { MailDtoCreate, MailDtoCreateRandom, MailDtoUpdate } from './dto';
@@ -47,18 +36,13 @@ export class MailController {
       'Tạo tài khoản ngẫu nhiên với đầu vào là mật khẩu và số tài khoản muốn tạo',
   })
   @ApiBody({ type: MailDtoCreateRandom })
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth(VALUES_CONST.SWAGGER_TOKEN_NAME)
   async createAccountsRandom(
     @Body() mailDtoCreateRandom: MailDtoCreateRandom,
-    @Req() req: Request,
   ): Promise<any> {
     return new ResponseCreate({
       message: 'Tạo ngẫu nhiên tài khoảng mail thành công',
-      metadata: await this.mailService.createAccountsRandom(
-        mailDtoCreateRandom,
-        req,
-      ),
+      metadata:
+        await this.mailService.createAccountsRandom(mailDtoCreateRandom),
     });
   }
 

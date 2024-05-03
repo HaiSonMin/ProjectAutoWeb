@@ -7,7 +7,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '@/features/auth/auth.module';
 import { UserModule } from '@/features/user/user.module';
 import { MailModule } from '@/features/scripts/mail/mail.module';
-import { FacebookModule } from './features/phone/facebook/facebook.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { FacebookModule } from './features/phone/facebook/facebook.module';
     MailModule,
     AuthModule,
     UserModule,
-    FacebookModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

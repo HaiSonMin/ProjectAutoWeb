@@ -13,12 +13,11 @@ import {
 import { Mail } from './model';
 import { Model } from 'mongoose';
 import { EStatus } from '@/enums';
-import { Request } from 'express';
 import { IMail } from '@/interfaces/models';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MailDtoCreate, MailDtoCreateRandom, MailDtoUpdate } from './dto';
-import { IGetManyItem, IQuery, ITokenVerify } from '@/interfaces/common';
+import { IGetManyItem, IQuery } from '@/interfaces/common';
 import { LIST_OF_FIRST_NAME, LIST_OF_LAST_NAME } from '@/constants';
 import { DriverSelenium } from '@/core';
 import { PROXY_IPS } from '@/hooks/proxy-ips';
@@ -29,9 +28,7 @@ export class MailService {
 
   async createAccountsRandom(
     mailDtoCreateRandom: MailDtoCreateRandom,
-    req: Request,
   ): Promise<IGetManyItem<IMail>> {
-    const user = req.user as ITokenVerify;
     const listMailsCreated: IMail[] = [] as IMail[];
 
     while (listMailsCreated.length < mailDtoCreateRandom.number_account) {
@@ -48,7 +45,6 @@ export class MailService {
         mail_lastName: randomLName,
         mail_password: mailDtoCreateRandom.password_account,
         mail_status: EStatus.SPENDING,
-        mail_user: user.userId,
       };
 
       const newMail = await this.mailModel.create(newAccount);
